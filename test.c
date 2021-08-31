@@ -6,24 +6,8 @@
 #include "graphics.h"
 #include "physics.h"
 #include "init.h"
-#include "omp.h"
+#include "calculs.h"
 
-
-
-/*Color white1 = {255,255,255};
-    Color darkOrange1 = {255,87,51};
-    Color lightOrange1 = {255,147,51};
-    Color turquoise1 = {51,219,255};
-    Color blue1 = {51,156,255};
-    Color darkBlue1 = {7,4,147};
-    Color lightBlue1 = {144,218,253};
-    Color yellow1 = {235,227,56};
-    Color lightYellow1 = {237,232,134};
-    Color green1 = {62,221,42};
-    Color lightGreen1 = {141,238,130};
-    Color darkGreen1 = {37,158,22};
-    Color red1 = {240,27,27};
-    Color purple1 = {169,27,240};*/
 
 
 
@@ -35,6 +19,10 @@ int pixel_step = 5;
 float zoom = 1;
 float step_zoom = 0.25;
 int pause = 0;
+struct Body* tabPlanets[500];
+struct Body* tabStars[100];
+int nbPlanets = 0;
+int nbStars = 0;
 
 //gcc *.c -lm $(sdl2-config --cflags --libs -ldl ) && ./a.out
 // GLOBAL
@@ -47,85 +35,7 @@ void SDL_EXIT()
     SDL_Quit();
 }
 
-void refreshPosition(listBody ** planet){
-    listBody * tmp = *planet;
-    
-    if (tmp == NULL)
-    {
-         printf("erreur refresh Position\n");
-    }
-    while (tmp != NULL)
-    {
-        move(tmp->body);
-        tmp = tmp->next;
-    }
-}
 
-void refreshList(listBody ** planet, listBody **stars){
-    
-    listBody * tmp = *planet;
-    listBody * tmp2 = (*planet)->next;
-    listBody * tmpStars = *stars;
-    listBody * tmpStars2 = (*stars)->next;
-    if (tmp == NULL)
-    {
-         printf("erreur refresh list\n");
-    }
-
-// for all planet, each star
-    while (tmp != NULL)
-    {
-        
-        #pragma omp parallel
-        #pragma omp master
-        while (tmpStars != NULL)
-        {
-            //isPulledSP(tmp->body, (tmpStars)->body);
-            #pragma omp task firstprivate(tmp, tmpStars)
-            {
-            isPulled(tmp->body, (tmpStars)->body);
-            //printf("fait par %d   position %f   position %f\n", omp_get_thread_num(), tmp->body->pos->y,tmpStars->body->pos->y );
-            }
-            tmpStars = tmpStars->next;
-            
-        }
-        
-        tmpStars = *stars;
-        tmp = tmp->next;
-    }
-    tmp = *planet;
-
-//for all planet, each planet
-    while (tmp->next != NULL)
-    {
-
-        while (tmp2 != NULL)
-        {
-            //isPulledPlanet(tmp->body, tmp2->body);
-            isPulled(tmp->body, tmp2->body);
-            tmp2 = tmp2->next;
-        }
-        tmp = tmp->next;
-        tmp2 = tmp->next;
-    }
-    tmpStars = *stars;
-    
-//for all stars, each star
-    while (tmpStars->next != NULL)
-    {
-
-        while (tmpStars2 != NULL)
-        {
-            //isPulledStar(tmpStars->body, tmpStars2->body);
-            isPulledStar(tmpStars->body, tmpStars2->body);
-            tmpStars2 = tmpStars2->next;
-        }
-        tmpStars = tmpStars->next;
-        tmpStars2 = tmpStars->next;
-    }
-
-
-}
 
 int keys(int * isRunning)
 {
@@ -267,55 +177,10 @@ int main(int argc, char ** argv){
     Color red = {240,27,27};
 
 
-    Body* b = malloc(sizeof(Body));
-    b->pos = malloc(sizeof(Vec2));
-    b->speed = malloc(sizeof(Vec2));
-    b->acc = malloc(sizeof(Vec2));
-
-    b->pos->x = 800;b->pos->y = 150;
-    b->speed->x=15;b->speed->y=0;
-    b->acc->x=0;b->acc->y=0;
-    b->radius = 10;
-    b->mass = 5;
-    b->color = green;
-
-    Body* venus = malloc(sizeof(Body));
-    venus->pos = malloc(sizeof(Vec2));
-    venus->speed = malloc(sizeof(Vec2));
-    venus->acc = malloc(sizeof(Vec2));
-
-    venus->pos->x = 800;venus->pos->y =600;
-    venus->speed->x=-20;venus->speed->y=0;
-    venus->acc->x=0;venus->acc->y=0;
-    venus->radius = 10;
-    venus->mass = 5;
-    venus->color = darkOrange;
-
-
-
-    Body* sun = malloc(sizeof(Body));
-    sun->pos = malloc(sizeof(Vec2));
-    sun->speed = malloc(sizeof(Vec2));
-    sun->acc = malloc(sizeof(Vec2));
-
-    sun->pos->x = 800;sun->pos->y = 450;
-    sun->speed->x=0;sun->speed->y=0;
-    sun->acc->x=0;sun->acc->y=0;
-    sun->radius = 30;
-    sun->mass = 3000;
-    sun->color = yellow;
-
-    Body* sun2 = malloc(sizeof(Body));
-    sun2->pos = malloc(sizeof(Vec2));
-    sun2->speed = malloc(sizeof(Vec2));
-    sun2->acc = malloc(sizeof(Vec2));
-
-    sun2->pos->x = 0;sun2->pos->y = 0;
-    sun2->speed->x=2;sun2->speed->y=2;
-    sun2->acc->x=0;sun2->acc->y=0;
-    sun2->radius = 35;
-    sun2->mass = 3000;
-    sun2->color = lightBlue;
+    Body* b = malloc(sizeof(Body));b->pos = malloc(sizeof(Vec2));b->speed = malloc(sizeof(Vec2));b->acc = malloc(sizeof(Vec2));b->pos->x = 800;b->pos->y = 150;b->speed->x=15;b->speed->y=0;b->acc->x=0;b->acc->y=0;b->radius = 10;b->mass = 5;b->color = green;
+    Body* venus = malloc(sizeof(Body));venus->pos = malloc(sizeof(Vec2));venus->speed = malloc(sizeof(Vec2));venus->acc = malloc(sizeof(Vec2));venus->pos->x = 800;venus->pos->y =600;venus->speed->x=-20;venus->speed->y=0;venus->acc->x=0;venus->acc->y=0;venus->radius = 10;venus->mass = 5;venus->color = darkOrange;
+    Body* sun = malloc(sizeof(Body));sun->pos = malloc(sizeof(Vec2));sun->speed = malloc(sizeof(Vec2));sun->acc = malloc(sizeof(Vec2));sun->pos->x = 800;sun->pos->y = 450;sun->speed->x=0;sun->speed->y=0;sun->acc->x=0;sun->acc->y=0;sun->radius = 30;sun->mass = 3000;sun->color = yellow;
+    Body* sun2 = malloc(sizeof(Body));sun2->pos = malloc(sizeof(Vec2));sun2->speed = malloc(sizeof(Vec2));sun2->acc = malloc(sizeof(Vec2));sun2->pos->x = 0;sun2->pos->y = 0;sun2->speed->x=2;sun2->speed->y=2;sun2->acc->x=0;sun2->acc->y=0;sun2->radius = 35;sun2->mass = 3000;sun2->color = lightBlue;
 
     listBody * planets = malloc(sizeof(listBody));
     planets->body = venus;
@@ -393,5 +258,5 @@ if (!pause)
 
  
 
-//gcc *.c -lm $(sdl2-config --cflags --libs -ldl ) 
+//gcc *.c -fopenmp -lm $(sdl2-config --cflags --libs -ldl ) && OMP_NUM_THREADS=2 ./a.out
 #endif

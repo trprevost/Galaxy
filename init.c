@@ -1,7 +1,7 @@
 //#include "init.h"
 #include "init.h"
 #include <stdio.h>
-
+extern struct Body* tabPlanets;
 
     //stars
     Color white = {255,255,255};
@@ -200,12 +200,11 @@ void addSolarSystem(listBody** stars, listBody** planets){
     int nbPlanets = rand()%4+4;
     for (int i = 0; i < nbPlanets; i++)
     {
-        addList(addPlanet((int)sun->pos->x, (int)sun->pos->y), planets);
-
+        addList(addPlanet((int)sun->pos->x, (int)sun->pos->y), planets); 
 
     }
     
-
+    //tabPlanets[0] = sun;
     addList(sun, stars);
 
     if (firstTime)
