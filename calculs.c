@@ -36,16 +36,19 @@ void refreshList(listBody ** planet, listBody **stars){
         #pragma omp parallel
         #pragma omp single
         #pragma omp task untied
+        #pragma omp task firstprivate(tmp, tmpStars)
+        {
         while (tmpStars != NULL)
         {
             //isPulledSP(tmp->body, (tmpStars)->body);
-            #pragma omp task firstprivate(tmp, tmpStars)
-            {
+            
+            
             isPulled(tmp->body, (tmpStars)->body);
             //printf("fait par %d   position %f   position %f\n", omp_get_thread_num(), tmp->body->pos->y,tmpStars->body->pos->y );
-            }
+            
             tmpStars = tmpStars->next;
             
+        }//printf("fait par %d\n", omp_get_thread_num());
         }
         
         tmpStars = *stars;

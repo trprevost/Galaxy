@@ -194,7 +194,7 @@ int main(int argc, char ** argv){
     stars->next = NULL;
     //addList(addStar(), &stars);
 
-    for (int i = 0; i < 5; i++)
+    for (int i = 0; i < 50; i++)
     {
            addSolarSystem(&stars, &planets);
 
@@ -209,6 +209,10 @@ int main(int argc, char ** argv){
     float temps;
     clock_t t1, t2;
     t1 = clock();
+    struct timespec start, finish;
+    double elapsed;
+
+clock_gettime(CLOCK_MONOTONIC, &start);
 
     while (i>0 && isRunning)
     {
@@ -244,7 +248,12 @@ if (!pause)
 
     t2 = clock();
     temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-    printf("temps = %f\n", temps);
+clock_gettime(CLOCK_MONOTONIC, &finish);
+
+elapsed = (finish.tv_sec - start.tv_sec);
+elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+    printf("temps = %f\n", elapsed);
 
 
     SDL_DestroyRenderer(renderer);
