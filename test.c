@@ -19,7 +19,7 @@ int pixel_step = 5;
 float zoom = 1;
 float step_zoom = 0.25;
 int pause = 0;
-struct Body* tabPlanets[500];
+struct Body* tabPlanets[800];
 struct Body* tabStars[100];
 int nbPlanets = 0;
 int nbStars = 0;
@@ -36,7 +36,9 @@ void SDL_EXIT()
 }
 
 
-
+/**
+ * all keys events
+ **/
 int keys(int * isRunning)
 {
     SDL_Event ev;
@@ -68,9 +70,6 @@ int keys(int * isRunning)
             x_shift += pixel_step *2;
         }
        
-        
-        
-        
         
 
         while(SDL_PollEvent(&ev))
@@ -162,105 +161,62 @@ int main(int argc, char ** argv){
     
 
     SDL_RenderPresent(renderer);
-    Color white = {255,255,255};
-    Color darkOrange = {255,87,51};
-    Color lightOrange = {255,147,51};
-    Color turquoise = {51,219,255};
-    Color blue = {51,156,255};
-    Color darkBlue = {7,4,147};
-    Color lightBlue = {144,218,253};
-    Color yellow = {235,227,56};
-    Color lightYellow = {237,232,134};
-    Color green = {62,221,42};
-    Color lightGreen = {141,238,130};
-    Color darkGreen = {37,158,22};
-    Color red = {240,27,27};
+  
 
-
-    Body* b = malloc(sizeof(Body));b->pos = malloc(sizeof(Vec2));b->speed = malloc(sizeof(Vec2));b->acc = malloc(sizeof(Vec2));b->pos->x = 800;b->pos->y = 150;b->speed->x=15;b->speed->y=0;b->acc->x=0;b->acc->y=0;b->radius = 10;b->mass = 5;b->color = green;
-    Body* venus = malloc(sizeof(Body));venus->pos = malloc(sizeof(Vec2));venus->speed = malloc(sizeof(Vec2));venus->acc = malloc(sizeof(Vec2));venus->pos->x = 800;venus->pos->y =600;venus->speed->x=-20;venus->speed->y=0;venus->acc->x=0;venus->acc->y=0;venus->radius = 10;venus->mass = 5;venus->color = darkOrange;
-    Body* sun = malloc(sizeof(Body));sun->pos = malloc(sizeof(Vec2));sun->speed = malloc(sizeof(Vec2));sun->acc = malloc(sizeof(Vec2));sun->pos->x = 800;sun->pos->y = 450;sun->speed->x=0;sun->speed->y=0;sun->acc->x=0;sun->acc->y=0;sun->radius = 30;sun->mass = 3000;sun->color = yellow;
-    Body* sun2 = malloc(sizeof(Body));sun2->pos = malloc(sizeof(Vec2));sun2->speed = malloc(sizeof(Vec2));sun2->acc = malloc(sizeof(Vec2));sun2->pos->x = 0;sun2->pos->y = 0;sun2->speed->x=2;sun2->speed->y=2;sun2->acc->x=0;sun2->acc->y=0;sun2->radius = 35;sun2->mass = 3000;sun2->color = lightBlue;
-
-    listBody * planets = malloc(sizeof(listBody));
-    planets->body = venus;
-    planets->next = NULL;
-    //addList(b, &planets);
-    //addList(addPlanet(), &planets);
-   
-
-    listBody * stars = malloc(sizeof(listBody));
-    stars->body = sun;
-    stars->next = NULL;
-    //addList(addStar(), &stars);
-
-    for (int i = 0; i < 50; i++)
+    for (int i = 0; i < 100; i++)
     {
-           addSolarSystem(&stars, &planets);
-
+           addSolarSystem();
     }
     
 
 
-
-    int i = 200;
+    //iterations
+    int i = 2000;
     
 
-    float temps;
-    clock_t t1, t2;
-    t1 = clock();
+    //time calculation
     struct timespec start, finish;
     double elapsed;
-
-clock_gettime(CLOCK_MONOTONIC, &start);
+    clock_gettime(CLOCK_MONOTONIC, &start);
 
     while (i>0 && isRunning)
     {
         keys(&isRunning);        
         
-        
-
-        
-        
+    
         if (SDL_SetRenderDrawColor(renderer, 0,0,0, SDL_ALPHA_OPAQUE) != 0)
             SDL_EXIT();
         SDL_RenderClear(renderer);
        
 if (!pause)
         {
-        refreshList(&planets, &stars);
-
-        refreshPosition(&planets);
-        refreshPosition(&stars);
+        refreshList();
+        refreshPosition();
+        i--;
         }
 
-        SDL_DrawList(&planets, renderer);
-        SDL_DrawList(&stars, renderer);
-
-
+        SDL_DrawList(renderer);
         SDL_RenderPresent(renderer);
         //SDL_Delay(30);
-        i--;
+        
         
 
 
     }
 
-    t2 = clock();
-    temps = (float)(t2-t1)/CLOCKS_PER_SEC;
-clock_gettime(CLOCK_MONOTONIC, &finish);
 
-elapsed = (finish.tv_sec - start.tv_sec);
-elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+    clock_gettime(CLOCK_MONOTONIC, &finish);
 
-    printf("temps = %f\n", elapsed);
+    elapsed = (finish.tv_sec - start.tv_sec);
+    elapsed += (finish.tv_nsec - start.tv_nsec) / 1000000000.0;
+
+    printf("time = %f seconds\n", elapsed);
 
 
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
     SDL_Quit();
 
-;
 
     return 0;
 }

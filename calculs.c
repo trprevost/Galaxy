@@ -4,86 +4,73 @@
 #include<stdlib.h>
 #include<stdio.h>
 
-void refreshPosition(listBody ** planet){
-    listBody * tmp = *planet;
+extern struct Body* tabPlanets[500];
+extern struct Body* tabStars[100];
+extern int nbPlanets;
+extern int nbStars;
+
+
+/**
+ * refresh the position of all planets ans stars
+ **/
+void refreshPosition(){
+   
+    for (int i = 0; i < nbStars; i++)
+    {
+        move(tabStars[i]);
+    }
+    for (int i = 0; i < nbPlanets; i++)
+    {
+        move(tabPlanets[i]);
+    }
     
-    if (tmp == NULL)
-    {
-         printf("erreur refresh Position\n");
-    }
-    while (tmp != NULL)
-    {
-        move(tmp->body);
-        tmp = tmp->next;
-    }
 }
 
-void refreshList(listBody ** planet, listBody **stars){
-    
-    listBody * tmp = *planet;
-    listBody * tmp2 = (*planet)->next;
-    listBody * tmpStars = *stars;
-    listBody * tmpStars2 = (*stars)->next;
-    if (tmp == NULL)
-    {
-         printf("erreur refresh list\n");
-    }
+
+/**
+ * refresh the acceleration of all planets and stars
+ **/
+void refreshList(){
 
 // for all planet, each star
-    while (tmp != NULL)
+#pragma omp parallel 
+#pragma omp for schedule(static,2) 
+    for (int i = 0; i < nbPlanets; i++)
     {
-        
-        #pragma omp parallel
-        #pragma omp single
-        #pragma omp task untied
-        #pragma omp task firstprivate(tmp, tmpStars)
+        for (int j = 0; j < nbStars; j++)
         {
-        while (tmpStars != NULL)
-        {
-            //isPulledSP(tmp->body, (tmpStars)->body);
-            
-            
-            isPulled(tmp->body, (tmpStars)->body);
-            //printf("fait par %d   position %f   position %f\n", omp_get_thread_num(), tmp->body->pos->y,tmpStars->body->pos->y );
-            
-            tmpStars = tmpStars->next;
-            
-        }//printf("fait par %d\n", omp_get_thread_num());
+            isPulled(tabPlanets[i], tabStars[j]); 
         }
         
-        tmpStars = *stars;
-        tmp = tmp->next;
     }
-    tmp = *planet;
+    
 
-//for all planet, each planet
-    while (tmp->next != NULL)
+//for all planet, each planet  
+int i;
+#pragma omp parallel 
+#pragma omp for schedule(dynamic) //collapse (2)
+    for (i = 0; i < nbPlanets-1; i++)
     {
-
-        while (tmp2 != NULL)
+        for (int j = i+1; j < nbPlanets; j++)
         {
-            //isPulledPlanet(tmp->body, tmp2->body);
-            isPulled(tmp->body, tmp2->body);
-            tmp2 = tmp2->next;
+            isPulled(tabPlanets[i],tabPlanets[j]);
         }
-        tmp = tmp->next;
-        tmp2 = tmp->next;
+        
     }
-    tmpStars = *stars;
     
 //for all stars, each star
-    while (tmpStars->next != NULL)
+#pragma omp parallel 
+#pragma omp for schedule(static,2)
+    for (int i = 0; i < nbStars-1; i++)
     {
-
-        while (tmpStars2 != NULL)
+        for (int j = i+1; j < nbStars; j++)
         {
-            //isPulledStar(tmpStars->body, tmpStars2->body);
-            isPulledStar(tmpStars->body, tmpStars2->body);
-            tmpStars2 = tmpStars2->next;
+            isPulledStar(tabStars[i], tabStars[j]);
+
         }
-        tmpStars = tmpStars->next;
-        tmpStars2 = tmpStars->next;
+        
     }
+    
 
 
 }

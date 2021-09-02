@@ -1,8 +1,13 @@
 #include"graphics.h"
-
+#include"omp.h"
 extern int y_shift;
 extern int x_shift;
 extern float zoom;
+
+extern struct Body* tabPlanets[500];
+extern struct Body* tabStars[100];
+extern int nbPlanets;
+extern int nbStars;
 
 int SDL_RenderDrawCircle(SDL_Renderer * renderer, int x, int y, int radius)
 {
@@ -96,17 +101,25 @@ int SDL_RenderFillCircle(SDL_Renderer * renderer, int x, int y, int radius)
     return status;
 }
 
+
+/**
+ * Draw a body on the screen
+ **/
 void SDL_DrawBody(Body * b, SDL_Renderer *renderer  ){
     int x = (b->pos->x + x_shift)*zoom;
     int y = (b->pos->y + y_shift)*zoom;
     SDL_RenderDrawCircle(renderer, x, y,b->radius*zoom);
-    SDL_RenderFillCircle(renderer,  x,y,b->radius*zoom);
+    SDL_RenderFillCircle(renderer, x, y,b->radius*zoom);
 }
 
 
-void SDL_DrawList(listBody ** planets, SDL_Renderer *renderer  )
+
+/**
+ * Call SDL_DrawBody()   for all stars and planets
+ **/
+void SDL_DrawList(SDL_Renderer *renderer  )
 {
-    listBody * tmp = *planets;
+  /*  listBody * tmp = *planets;
     
     if (tmp == NULL)
     {
@@ -119,5 +132,24 @@ void SDL_DrawList(listBody ** planets, SDL_Renderer *renderer  )
             
         SDL_DrawBody(tmp->body, renderer);
         tmp = tmp->next;
+    }*/
+
+
+    for (int i = 0; i < nbStars; i++)
+    {
+       if (SDL_SetRenderDrawColor(renderer, tabStars[i]->color.r,tabStars[i]->color.g,tabStars[i]->color.b, SDL_ALPHA_OPAQUE) != 0)
+            {;}//SDL_EXIT();
+            
+        SDL_DrawBody(tabStars[i], renderer);
+        
     }
+
+    for (int i = 0; i < nbPlanets; i++)
+    {
+        if (SDL_SetRenderDrawColor(renderer, tabPlanets[i]->color.r,tabPlanets[i]->color.g,tabPlanets[i]->color.b, SDL_ALPHA_OPAQUE) != 0)
+            {;}//SDL_EXIT();
+            
+        SDL_DrawBody(tabPlanets[i], renderer);
+    }
+    
 }

@@ -1,9 +1,12 @@
 //#include "init.h"
 #include "init.h"
 #include <stdio.h>
-extern struct Body* tabPlanets;
+extern struct Body* tabPlanets[800];
+extern struct Body* tabStars[100];
+extern int nbPlanets;
+extern int nbStars;
 
-    //stars
+    //stars colors
     Color white = {255,255,255};
     Color lightOrange = {255,147,51};
     Color darkOrange = {255,87,51};
@@ -12,7 +15,7 @@ extern struct Body* tabPlanets;
     Color lightYellow = {237,232,134};
     Color red = {240,27,27};
 
-    //planets 
+    //planets colors
     Color blue = {51,156,255};
     Color darkBlue = {50,50,200};
     Color green = {62,221,42};
@@ -26,32 +29,37 @@ float distance(int x1, int y1, int x2, int y2 ){
     return pow((x1-x2),2.0) + pow((y1-y2), 2.0);
 }
 
-// check if distance² betweens the new star and others is more than 3 000 000
-int checkSun(listBody** stars, Body * b){
+/**
+ * check if distance² betweens the new star and others is more than 3 000 000
+ * if distance² < 3 000 000 the body is deleted
+ **/
+int checkSun(Body * b){
     int x = (int)b->pos->x;
     int y = (int)b->pos->y;
     int x2, y2;
 
-    listBody *tmp = *stars;
+   
 
-    while (tmp != NULL)
+    for (int i = 0; i < nbStars; i++)
     {
-        x2 = (int)tmp->body->pos->x;
-        y2 = (int)tmp->body->pos->y;
+        x2 = (int)tabStars[i]->pos->x;
+        y2 = (int)tabStars[i]->pos->y;
 
         if (distance(x,y,x2,y2)<3000000)
         {
             free(b);
             return 0;
         }
-
-        tmp = tmp->next;
-
     }
+    
 
     return 1;
 }
 
+/**
+ * switch Colors for Stars
+ * r parameter is random
+ **/
 Color StarColor(int r){
     switch (r)
     {
@@ -75,6 +83,10 @@ Color StarColor(int r){
     }
 }
 
+/**
+ * switch Colors for Planets
+ * r parameter is random
+ **/
 Color PlanetColor(int r){
     switch (r)
     {
@@ -102,11 +114,12 @@ Color PlanetColor(int r){
     }
 }
 
+
+/**
+ * Create a Planet with a random distance from a star (x and y position), 
+ * random color and speed
+ **/
 Body * addPlanet(int x, int y){
-
-
-
-
     
     Body* b = malloc(sizeof(Body));
     b->pos = malloc(sizeof(Vec2));
@@ -116,7 +129,7 @@ Body * addPlanet(int x, int y){
     b->pos->x = x;b->pos->y = rand()%400+y+150;
     b->acc->x=0;b->acc->y=0;
     
-    int distance = sqrt (pow((x-b->pos->x),2.0) + pow((y-b->pos->y), 2.0));
+    //int distance = sqrt (pow((x-b->pos->x),2.0) + pow((y-b->pos->y), 2.0));
     b->mass = 5;
 
     //clock direction or anti clock direction
@@ -134,6 +147,10 @@ Body * addPlanet(int x, int y){
     return b;
 }
 
+
+/**
+ * Create a Star with random position and color
+ **/
 Body * addStar(){
     
 
@@ -159,16 +176,12 @@ Body * addStar(){
 }
 
 
-void printL(listBody ** l){
-    listBody * tmp = *l;
- while (tmp != NULL)
-    {
-        printf("%d\n", tmp->body->mass);
-        tmp = tmp->next;
-    }
 
-}
-void addSolarSystem(listBody** stars, listBody** planets){
+
+/**
+ * Create a solar system: a star and some planets orbiting around it
+ **/
+void addSolarSystem(){
     int static firstTime = 1;
     int wellPlaced = 0;
     Body *sun ;
@@ -179,14 +192,13 @@ void addSolarSystem(listBody** stars, listBody** planets){
     }
 
 
-    //printf("wp: %d,  firstime: %d \n", wellPlaced, firstTime);
     while (!wellPlaced && i<50 && !firstTime)
     {
         sun = addStar();
 
-        wellPlaced = checkSun(stars, sun);
-
+        wellPlaced = checkSun(sun);
         i++;
+
         if (i == 50 && wellPlaced == 0)
         {
             sun = addStar();
@@ -197,21 +209,18 @@ void addSolarSystem(listBody** stars, listBody** planets){
 
     
 
-    int nbPlanets = rand()%4+4;
-    for (int i = 0; i < nbPlanets; i++)
+    int nbPlanetsToCreate = rand()%4+4;
+    for (int i = 0; i < nbPlanetsToCreate; i++)
     {
-        addList(addPlanet((int)sun->pos->x, (int)sun->pos->y), planets); 
-
+        Body * body = addPlanet((int)sun->pos->x, (int)sun->pos->y);
+        tabPlanets[nbPlanets] = body;
+        nbPlanets++;
     }
     
-    //tabPlanets[0] = sun;
-    addList(sun, stars);
+    tabStars[nbStars] = sun;
+    nbStars++;
 
     if (firstTime)
-    {
-        (*stars)= (*stars)->next;
-        (*planets) = (*planets)->next;
         firstTime = 0;
-    }
 
 }

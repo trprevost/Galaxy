@@ -8,7 +8,7 @@
 
 Body * addPlanet(int x, int y);
 Body * addStar();
-void addSolarSystem(listBody** stars, listBody** planets);
+void addSolarSystem();
 
    
 
