@@ -48,7 +48,7 @@ void refreshList(){
 //for all planet, each planet  
 int i;
 #pragma omp parallel 
-#pragma omp for schedule(dynamic) //collapse (2)
+#pragma omp for schedule(static,2) //collapse (2)
     for (i = 0; i < nbPlanets-1; i++)
     {
         for (int j = i+1; j < nbPlanets; j++)
