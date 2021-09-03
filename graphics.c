@@ -13,14 +13,14 @@ extern int nbStars;
 
 int isOnScreen(int x, int y)
 {
-    if (x < x_shift-30 || x > x_shift + x_size + 30)
+    /*f (x < x_shift-30 || x > x_shift + x_size + 30)
     {
         return 0;
     }
     if (y < y_shift-30 || y > y_shift + y_size + 30)
     {
         return 0;
-    }
+    }*/
     
     return 1;
 }
