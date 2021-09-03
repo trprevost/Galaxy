@@ -35,7 +35,23 @@ void SDL_EXIT()
     SDL_Quit();
 }
 
-
+void destroyTab(){
+    for (int i = 0; i < nbPlanets; i++)
+    {
+        free(tabPlanets[i]->acc);
+        free(tabPlanets[i]->pos);
+        free(tabPlanets[i]->speed);
+        free(tabPlanets[i]);
+    }
+    for (int i = 0; i < nbStars; i++)
+    {
+        free(tabStars[i]->acc);
+        free(tabStars[i]->pos);
+        free(tabStars[i]->speed);
+        free(tabStars[i]);
+    }
+    
+}
 /**
  * all keys events
  **/
@@ -50,7 +66,6 @@ int keys(int * isRunning)
         int escape = keystates[SDL_SCANCODE_ESCAPE];
         int minus = keystates[SDL_SCANCODE_KP_MINUS];
         int plus = keystates[SDL_SCANCODE_KP_PLUS];
-        //e = keystates[SDL_SCANCODE_E]
         int p = keystates[SDL_SCANCODE_P];
 
         if (escape){
@@ -217,6 +232,7 @@ if (!pause)
     SDL_DestroyWindow(window);
     SDL_Quit();
 
+    destroyTab();
 
     return 0;
 }

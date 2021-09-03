@@ -3,11 +3,28 @@
 extern int y_shift;
 extern int x_shift;
 extern float zoom;
+int static x_size = 1600;
+int static y_size = 900;
 
 extern struct Body* tabPlanets[500];
 extern struct Body* tabStars[100];
 extern int nbPlanets;
 extern int nbStars;
+
+int isOnScreen(int x, int y)
+{
+    if (x < x_shift-30 || x > x_shift + x_size + 30)
+    {
+        return 0;
+    }
+    if (y < y_shift-30 || y > y_shift + y_size + 30)
+    {
+        return 0;
+    }
+    
+    return 1;
+}
+
 
 
 /**
@@ -79,19 +96,28 @@ void SDL_DrawList(SDL_Renderer *renderer  )
 
     for (int i = 0; i < nbStars; i++)
     {
-       if (SDL_SetRenderDrawColor(renderer, tabStars[i]->color.r,tabStars[i]->color.g,tabStars[i]->color.b, SDL_ALPHA_OPAQUE) != 0)
+
+        if (isOnScreen(tabStars[i]->pos->x,tabStars[i]->pos->y))
+        {
+            //change color
+            if (SDL_SetRenderDrawColor(renderer, tabStars[i]->color.r,tabStars[i]->color.g,tabStars[i]->color.b, SDL_ALPHA_OPAQUE) != 0)
             {;}//SDL_EXIT();
             
-        SDL_DrawBody(tabStars[i], renderer);
+            SDL_DrawBody(tabStars[i], renderer);
+        }
+        
+       
         
     }
 
     for (int i = 0; i < nbPlanets; i++)
     {
+        if (isOnScreen(tabPlanets[i]->pos->x,tabPlanets[i]->pos->y))
+        {
         if (SDL_SetRenderDrawColor(renderer, tabPlanets[i]->color.r,tabPlanets[i]->color.g,tabPlanets[i]->color.b, SDL_ALPHA_OPAQUE) != 0)
             {;}//SDL_EXIT();
             
         SDL_DrawBody(tabPlanets[i], renderer);
+        }
     }
-    
 }

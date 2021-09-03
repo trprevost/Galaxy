@@ -210,7 +210,7 @@ void addSolarSystem(){
     
 
     int nbPlanetsToCreate = rand()%4+4;
-    for (int i = 0; i < nbPlanetsToCreate; i++)
+    for (int i = 0; i < 5; i++)
     {
         Body * body = addPlanet((int)sun->pos->x, (int)sun->pos->y);
         tabPlanets[nbPlanets] = body;
