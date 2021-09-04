@@ -6,7 +6,8 @@ gcc *.c -o galaxy.out -fopenmp -lm $(sdl2-config --cflags --libs -ldl )
 
 ## Summary
 ## 1. Why this project
-## 2. Optimizations, Tests and Results
+## 2. Keys
+## 3. Optimizations, Tests and Results
 &nbsp;\
 &nbsp;\
 &nbsp;
@@ -14,8 +15,11 @@ gcc *.c -o galaxy.out -fopenmp -lm $(sdl2-config --cflags --libs -ldl )
 
 ## 1. Why this project
 With this project I wanted to work on a small 2D graphical simulation, then to be able to optimize and accelerate it.
-
-## 2. Optimizations, Tests and Results
+## 2. Keys
+- pause: P
+- move: arrows keys
+- zoom / dezoom: z / s or + / - from keypad
+## 3. Optimizations, Tests and Results
 Once the project was functional, I wanted to parallelize the gravitation calculations.
 How to do it?
 First of all we need to calculate the time when the program is calculated on a single thread.\

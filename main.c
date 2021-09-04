@@ -67,6 +67,7 @@ int keys(int * isRunning)
         int minus = keystates[SDL_SCANCODE_KP_MINUS];
         int plus = keystates[SDL_SCANCODE_KP_PLUS];
         int p = keystates[SDL_SCANCODE_P];
+        int Z = keystates[SDL_SCANCODE_Z];
 
         if (escape){
                 *isRunning = 0;
@@ -97,7 +98,7 @@ int keys(int * isRunning)
             {
                 switch(ev.key.keysym.sym)
                 {
-                    case SDLK_KP_PLUS:
+                    case SDLK_KP_PLUS: case SDLK_z:
                         if (zoom < 8 )
                         {
                             float xdiff = zoom * x_size - (zoom + step_zoom) * x_size;
@@ -110,8 +111,9 @@ int keys(int * isRunning)
                             zoom += step_zoom;
                         }
                         break;
+                    
 
-                    case SDLK_KP_MINUS:
+                    case SDLK_KP_MINUS: case SDLK_s:
                         if (zoom > step_zoom )
                         {
                             float xdiff = zoom * x_size - (zoom - step_zoom) * x_size;
