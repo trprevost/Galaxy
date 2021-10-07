@@ -29,7 +29,7 @@ A test computes 2000 iterations of 600 stars, each star computes its acceleratio
 ### Tests:
 1 thread, basic algorithm: 19.15"
 
-### OpenMP
+### OpenMP and Optimizations
 With omp task\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    1 thread : 20.17"\
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    4 threads : 26.61"\
@@ -45,8 +45,12 @@ The Schedule: static is the best: each iteration represent the same amount of co
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    10 threads: 9.90"
 
 Fine, we divided the time by two. But we can do better.\
-We could parallelize the display, however it is better to avoid displaying a maximum of them by displaying only the stars whose coordinates are on the screen.\
- With this and 8 threads, we reach 8.60" which means a 2.23 speedup.
+We could parallelize the display, however it is better to avoid displaying a maximum of them by displaying only the stars whose coordinates are on the screen.
+With this and 8 threads, we reach 8.60"\
+
+Planets don't have a huge mass, so between 2 planets which are far away from each other, their attraction is close to 0. Let's add a pseudo tile optimization: before computing attraction between 2 planets the program compute in which tile the two planets are, if they are in the same tile or a &nbsp;neibor, we compute attraction, otherwise we don't. 
+The speedup is significant: 5.73", we have a 3.34 speedup
+ 
 
 
 

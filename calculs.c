@@ -52,8 +52,19 @@ int i;
     for (i = 0; i < nbPlanets-1; i++)
     {
         for (int j = i+1; j < nbPlanets; j++)
-        {
-            isPulled(tabPlanets[i],tabPlanets[j]);
+        {   
+            int x1,x2,y1,y2;
+            x1 = (int)(tabPlanets[i]->pos->x/ 2000);
+            x2 = (int)(tabPlanets[j]->pos->x/ 2000);
+            y1 = (int)(tabPlanets[i]->pos->y/ 2000);
+            y2 = (int)(tabPlanets[j]->pos->y/ 2000);
+
+            if (x1-x2 <2 && x1-x2>-2 && y1-y2<2 && y1-y2>-2)
+            {
+                isPulled(tabPlanets[i],tabPlanets[j]);
+            }
+            
+            
         }
         
     }

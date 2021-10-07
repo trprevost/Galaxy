@@ -21,6 +21,7 @@ int isOnScreen(int x, int y)
     {
         return 0;
     }*/
+
     
     return 1;
 }
