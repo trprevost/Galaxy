@@ -48,8 +48,9 @@ Fine, we divided the time by two. But we can do better.\
 We could parallelize the display, however it is better to avoid displaying a maximum of them by displaying only the stars whose coordinates are on the screen.
 With this and 8 threads, we reach 8.60"\
 
-Planets don't have a huge mass, so between 2 planets which are far away from each other, their attraction is close to 0. Let's add a pseudo tile optimization: before computing attraction between 2 planets the program compute in which tile the two planets are, if they are in the same tile or a &nbsp;neibor, we compute attraction, otherwise we don't. 
-The speedup is significant: 5.73", we have a 3.34 speedup
+Planets don't have a huge mass, so between 2 planets which are far away from each other, their attraction is close to 0. Let's add a pseudo tile optimization: before computing attraction between 2 planets the program compute in which tile the two planets are, if they are in the same tile or a neighbor, we compute attraction, otherwise we don't. 
+The speedup is significant: 5.73".
+We have a 3.34 speedup
  
 
 
