@@ -4,6 +4,8 @@ This project works with SDL2 and OpenMP.\
 to compile easily: \
 gcc *.c -o galaxy.out -fopenmp -lm $(sdl2-config --cflags --libs -ldl )
 
+little demonstration: https://www.youtube.com/watch?v=dl2sN3jQRWc
+
 ## Summary
 ## 1. Why this project
 ## 2. Keys
@@ -49,7 +51,7 @@ We could parallelize the display, however it is better to avoid displaying a max
 With this and 8 threads, we reach 8.60"\
 
 Planets don't have a huge mass, so between 2 planets which are far away from each other, their attraction is close to 0. Let's add a pseudo tile optimization: before computing attraction between 2 planets the program compute in which tile the two planets are, if they are in the same tile or a neighbor, we compute attraction, otherwise we don't. 
-The speedup is significant: 5.73".
+The speedup is significant: 5.73". The Schedule: static is still the best.
 We have a 3.34 speedup
  
 

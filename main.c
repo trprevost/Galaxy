@@ -180,7 +180,7 @@ int main(int argc, char ** argv){
     SDL_RenderPresent(renderer);
   
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
            addSolarSystem();
     }
@@ -209,12 +209,12 @@ if (!pause)
         {
         refreshList();
         refreshPosition();
-        i--;
+        //i--;
         }
 
         SDL_DrawList(renderer);
         SDL_RenderPresent(renderer);
-        //SDL_Delay(30);
+        SDL_Delay(30);
         
         
 
